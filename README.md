@@ -39,7 +39,7 @@ Este sitio se despliega automáticamente con GitHub Pages al hacer push a main.
 bashgit add .
 git commit -m "update bio"
 git push origin main
-La URL pública queda activa en https://cmcvtrader.github.io en menos de 60 segundos.
+La URL pública queda activa en https://cmcvtrader.github.io/x en menos de 60 segundos.
 
 ✏️ Personalización rápida
 Qué cambiarDóndeNombre / bio<h1 class="name"> y <p class="bio">Foto de perfilsrc del <img id="profile-img">Links de redesAtributo href de cada .social-btnCards de proyectosSección Proyectos — editar href, título y descripciónCards de serviciosSección Servicios — editar href y badgeColoresVariables CSS en :root
