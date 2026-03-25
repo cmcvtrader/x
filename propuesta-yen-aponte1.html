@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta Digital — Yen Aponte</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --ink:        #1a1714;
+            --ink-muted:  #5a524b;
+            --paper:      #faf9f7;
+            --cream:      #f2ede6;
+            --border:     #e2dbd3;
+            --gold:       #c8933a;
+            --gold-light: #f0c97a;
+            --sage:       #5a7a5c;
+            --sage-dark:  #3d5e3f;
+            --white:      #ffffff;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.7;
+            font-weight: 300;
+            -webkit-font-smoothing: antialiased;
+            font-size: 16px;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .page {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 20px 72px;
+        }
+
+        /* ── COVER ── */
+        .cover {
+            padding: 52px 0 40px;
+            border-bottom: 1px solid var(--border);
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .cover-eyebrow {
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+
+        .cover-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 8vw, 3.2rem);
+            font-weight: 300;
+            line-height: 1.15;
+            color: var(--ink);
+            margin-bottom: 28px;
+        }
+
+        .cover-title em { font-style: italic; color: var(--gold); }
+
+        .cover-meta {
+            display: flex;
+            flex-wrap: wrap;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            width: fit-content;
+            max-width: 100%;
+        }
+
+        .cover-meta-item {
+            padding: 10px 18px;
+            border-right: 1px solid var(--border);
+        }
+
+        .cover-meta-item:last-child { border-right: none; }
+
+        .meta-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-bottom: 2px;
+        }
+
+        .meta-value {
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        /* ── SECTIONS ── */
+        .section { padding: 48px 0 0; }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.67rem;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--sage);
+            margin-bottom: 8px;
+        }
+
+        .section-label::before {
+            content: '';
+            display: block;
+            width: 22px;
+            height: 1px;
+            background: var(--sage);
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.5rem, 5.5vw, 2rem);
+            font-weight: 300;
+            color: var(--ink);
+            margin-bottom: 20px;
+        }
+
+        /* ── INTRO & ENFOQUE ── */
+        .intro-text {
+            font-size: 0.93rem;
+            color: var(--ink-muted);
+            line-height: 1.75;
+        }
+
+        .enfoque-card {
+            background: var(--cream);
+            border-left: 3px solid var(--gold);
+            padding: 18px 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: var(--ink-muted);
+            line-height: 1.7;
+        }
+
+        /* ── PHASE CARDS — MOBILE FIRST ── */
+        .phases {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .phase-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .phase-head {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: var(--ink);
+        }
+
+        .phase-head.green { background: var(--sage-dark); }
+
+        .phase-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.7rem;
+            font-weight: 300;
+            color: var(--gold-light);
+            line-height: 1;
+            min-width: 26px;
+            flex-shrink: 0;
+        }
+
+        .phase-head.green .phase-num { color: #d4f5d6; }
+
+        .phase-head-info { flex: 1; min-width: 0; }
+
+        .phase-title {
+            font-size: 0.93rem;
+            font-weight: 500;
+            color: #fff;
+            line-height: 1.3;
+        }
+
+        .phase-weeks {
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.42);
+            margin-top: 2px;
+        }
+
+        .phase-body {
+            padding: 14px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .phase-item {
+            display: flex;
+            gap: 9px;
+            font-size: 0.86rem;
+            color: var(--ink-muted);
+            line-height: 1.6;
+        }
+
+        .arrow {
+            color: var(--gold);
+            flex-shrink: 0;
+            margin-top: 2px;
+            font-size: 0.78rem;
+        }
+
+        .phase-item strong { color: var(--ink); font-weight: 500; }
+
+        .sub-list {
+            margin-top: 5px;
+            padding-left: 10px;
+            border-left: 2px solid var(--cream);
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .sub-list span {
+            display: block;
+            font-size: 0.81rem;
+            color: var(--ink-muted);
+        }
+
+        .sub-list span::before { content: '· '; color: var(--sage); }
+
+        /* ── PRICING ── */
+        .pricing-split {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .pricing-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .pricing-card.web { border-color: var(--sage); }
+
+        .p-head {
+            padding: 18px 20px 14px;
+            background: var(--ink);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .p-head.green { background: var(--sage-dark); }
+
+        .p-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: #fff;
+        }
+
+        .p-name em { font-style: italic; color: var(--gold-light); }
+        .p-head.green .p-name em { color: #d4f5d6; }
+
+        .p-subtitle {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.45);
+            margin-top: 3px;
+        }
+
+        .p-price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--gold-light);
+            white-space: nowrap;
+        }
+
+        .p-head.green .p-price { color: #d4f5d6; }
+        .p-price small { font-size: 0.9rem; opacity: 0.55; }
+
+        .p-body {
+            background: var(--white);
+            padding: 16px 20px;
+        }
+
+        .p-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .p-meta-item { display: flex; flex-direction: column; gap: 2px; }
+
+        .p-meta-label {
+            font-size: 0.63rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+        }
+
+        .p-meta-value {
+            font-size: 0.86rem;
+            font-weight: 500;
+        }
+
+        .p-included-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--sage);
+            margin-bottom: 10px;
+        }
+
+        .p-included {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 7px;
+        }
+
+        .p-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.83rem;
+            color: var(--ink-muted);
+        }
+
+        .p-item::before {
+            content: '✓';
+            color: var(--sage);
+            font-weight: 600;
+            font-size: 0.73rem;
+            flex-shrink: 0;
+        }
+
+        .p-note {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-size: 0.81rem;
+            color: var(--ink-muted);
+            font-style: italic;
+        }
+
+        .web-badge {
+            display: inline-block;
+            background: var(--sage);
+            color: #fff;
+            font-size: 0.62rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 3px 9px;
+            border-radius: 20px;
+            margin-bottom: 5px;
+        }
+
+        /* ── NEXT STEPS ── */
+        .next-box {
+            margin-top: 24px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .next-box p {
+            font-size: 0.9rem;
+            color: var(--ink-muted);
+            line-height: 1.75;
+        }
+
+        .next-box strong { color: var(--ink); font-weight: 500; }
+
+        .cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .cta-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--gold);
+            color: #fff;
+            text-decoration: none;
+            padding: 11px 20px;
+            border-radius: 7px;
+            font-size: 0.87rem;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .cta-primary:hover { background: #a87630; transform: translateY(-1px); }
+
+        .cta-secondary {
+            font-size: 0.86rem;
+            color: var(--sage);
+            text-decoration: none;
+            border-bottom: 1px solid currentColor;
+            padding-bottom: 1px;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            margin-top: 52px;
+            padding-top: 28px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+        }
+
+        .footer-role {
+            font-size: 0.73rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink-muted);
+            margin-top: 3px;
+        }
+
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: right;
+        }
+
+        .footer-contact a {
+            font-size: 0.83rem;
+            color: var(--sage);
+            text-decoration: none;
+        }
+
+        .footer-contact span {
+            font-size: 0.8rem;
+            color: var(--ink-muted);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 420px) {
+            .cover-meta { flex-direction: column; width: 100%; }
+            .cover-meta-item { border-right: none; border-bottom: 1px solid var(--border); }
+            .cover-meta-item:last-child { border-bottom: none; }
+            .p-included { grid-template-columns: 1fr; }
+            .p-head { flex-direction: column; }
+            footer { flex-direction: column; align-items: flex-start; }
+            .footer-contact { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- COVER -->
+    <header class="cover">
+        <p class="cover-eyebrow">Propuesta · Marzo 2026</p>
+        <h1 class="cover-title">Presencia Digital <em>Integral</em><br>para tu negocio</h1>
+        <div class="cover-meta">
+            <div class="cover-meta-item">
+                <div class="meta-label">Para</div>
+                <div class="meta-value">Yen Aponte</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="meta-label">De</div>
+                <div class="meta-value">Maximiliano Castillo</div>
+            </div>
+            <div class="cover-meta-item">
+                <div class="meta-label">Fecha</div>
+                <div class="meta-value">25 mar, 2026</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- INTRO -->
+    <section class="section">
+        <p class="intro-text">
+            Yen, sabes mejor que nadie lo que vale tu trabajo. Veinte años de acabados impecables hablan solos.
+            Lo que vamos a hacer es sencillo: que eso mismo se vea en internet, porque hoy el primer contacto
+            de cualquier cliente nuevo empieza en Google.
+        </p>
+    </section>
+
+    <!-- ENFOQUE -->
+    <section class="section">
+        <p class="section-label">01 · Enfoque</p>
+        <h2 class="section-title">Por qué funciona en la Vega Baja</h2>
+        <div class="enfoque-card">
+            Conocemos el mercado de Guardamar a San Javier. Aquí el cliente busca confianza, no seguidores.
+            Todo lo que construimos va orientado a una sola cosa: que quien busque una reforma en la zona
+            te encuentre a ti, vea tu trabajo y te escriba.
+        </div>
+    </section>
+
+    <!-- PLAN DE ACCIÓN -->
+    <section class="section">
+        <p class="section-label">02 · Plan de Acción</p>
+        <h2 class="section-title">Tu nueva sede digital</h2>
+
+        <div class="phases">
+
+            <div class="phase-card">
+                <div class="phase-head">
+                    <span class="phase-num">01</span>
+                    <div class="phase-head-info">
+                        <div class="phase-title">Identidad y Marca</div>
+                        <div class="phase-weeks">Semanas 1 – 2</div>
+                    </div>
+                </div>
+                <div class="phase-body">
+                    <div class="phase-item">
+                        <span class="arrow">→</span>
+                        <span><strong>Naming:</strong> nombre comercial fácil de recordar en la Costa Blanca.</span>
+                    </div>
+                    <div class="phase-item">
+                        <span class="arrow">→</span>
+                        <span><strong>Logotipo & Branding:</strong> identidad visual que refleja la calidad de tus acabados.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-card">
+                <div class="phase-head">
+                    <span class="phase-num">02</span>
+                    <div class="phase-head-info">
+                        <div class="phase-title">Posicionamiento Local</div>
+                        <div class="phase-weeks">Semana 3</div>
+                    </div>
+                </div>
+                <div class="phase-body">
+                    <div class="phase-item">
+                        <span class="arrow">→</span>
+                        <span><strong>Google Business Profile:</strong> ficha optimizada para que aparezcas en Guardamar, Torrevieja, Orihuela Costa y San Javier cuando alguien busque un reformista.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-card">
+                <div class="phase-head">
+                    <span class="phase-num">03</span>
+                    <div class="phase-head-info">
+                        <div class="phase-title">Redes + Primer Mes de Contenido</div>
+                        <div class="phase-weeks">Semana 4 · incluye mes 1</div>
+                    </div>
+                </div>
+                <div class="phase-body">
+                    <div class="phase-item">
+                        <span class="arrow">→</span>
+                        <span><strong>Facebook & Instagram:</strong> perfiles corporativos configurados con el nuevo branding.</span>
+                    </div>
+                    <div class="phase-item">
+                        <span class="arrow">→</span>
+                        <span><strong>Plan de contenido mes 1:</strong> 8 publicaciones diseñadas y programadas — trabajos Antes/Después, presentación, tips. Arrancas con actividad real desde el primer día sin tener que preocuparte de nada.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase-card">
+                <div class="phase-head green">
+                    <span class="phase-num">04</span>
+                    <div class="phase-head-info">
+                        <div class="phase-title">Web Profesional</div>
+                        <div class="phase-weeks">Semanas 5 – 6 · fase final</div>
+                    </div>
+                </div>
+                <div class="phase-body">
+                    <div class="phase-item">
+                        <span class="arrow">→</span>
+                        <span><strong>Diseño y desarrollo:</strong> web rápida, 100% móvil, con formulario y botón WhatsApp.</span>
+                    </div>
+                    <div class="phase-item">
+                        <span class="arrow">→</span>
+                        <div>
+                            <strong>Páginas incluidas:</strong>
+                            <div class="sub-list">
+                                <span>Inicio — quién eres y qué haces</span>
+                                <span>Servicios — suelos, baños, fachadas, jardinería, gotelé, demoliciones</span>
+                                <span>Galería — tus mejores trabajos</span>
+                                <span>Contacto — formulario + WhatsApp directo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- INVERSIÓN -->
+    <section class="section">
+        <p class="section-label">03 · Inversión</p>
+        <h2 class="section-title">Dos pasos, un solo proyecto</h2>
+
+        <div class="pricing-split">
+
+            <div class="pricing-card">
+                <div class="p-head">
+                    <div>
+                        <div class="p-name">Paso 1 — <em>Lanzamiento de Marca</em></div>
+                        <div class="p-subtitle">Naming · Logo · Google · Redes · Marketing mes 1</div>
+                    </div>
+                    <div class="p-price">$$ <small>€</small></div>
+                </div>
+                <div class="p-body">
+                    <div class="p-meta">
+                        <div class="p-meta-item">
+                            <span class="p-meta-label">Pago</span>
+                            <span class="p-meta-value">50% inicio · 50% entrega</span>
+                        </div>
+                        <div class="p-meta-item">
+                            <span class="p-meta-label">Plazo</span>
+                            <span class="p-meta-value">4 semanas</span>
+                        </div>
+                    </div>
+                    <p class="p-included-label">Incluye</p>
+                    <div class="p-included">
+                        <div class="p-item">Naming comercial</div>
+                        <div class="p-item">Logotipo & Branding</div>
+                        <div class="p-item">Google Business Profile</div>
+                        <div class="p-item">Perfil Facebook</div>
+                        <div class="p-item">Perfil Instagram</div>
+                        <div class="p-item">8 posts mes 1</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pricing-card web">
+                <div class="p-head green">
+                    <div>
+                        <span class="web-badge">Fase final</span>
+                        <div class="p-name">Paso 2 — <em>Web Profesional</em></div>
+                        <div class="p-subtitle">Tu escaparate online, disponible 24/7</div>
+                    </div>
+                    <div class="p-price">$$ <small>€</small></div>
+                </div>
+                <div class="p-body">
+                    <div class="p-meta">
+                        <div class="p-meta-item">
+                            <span class="p-meta-label">Pago</span>
+                            <span class="p-meta-value">50% inicio · 50% publicación</span>
+                        </div>
+                        <div class="p-meta-item">
+                            <span class="p-meta-label">Plazo</span>
+                            <span class="p-meta-value">2 semanas adicionales</span>
+                        </div>
+                    </div>
+                    <p class="p-included-label">Incluye</p>
+                    <div class="p-included">
+                        <div class="p-item">Diseño web completo</div>
+                        <div class="p-item">Adaptada a móvil</div>
+                        <div class="p-item">Galería de trabajos</div>
+                        <div class="p-item">Formulario de contacto</div>
+                        <div class="p-item">Botón WhatsApp</div>
+                        <div class="p-item">Dominio 1er año</div>
+                    </div>
+                    <p class="p-note">Puedes arrancarlo junto al Paso 1 o cuando la marca esté lista. Como prefieras.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- PRÓXIMOS PASOS -->
+    <section class="section">
+        <p class="section-label">04 · Siguiente paso</p>
+        <h2 class="section-title">¿Arrancamos?</h2>
+        <div class="next-box">
+            <p>
+                Me dices el día y hablamos 15 minutos — por teléfono o donde prefieras.
+                Con eso tengo todo lo que necesito para arrancar con el naming la misma semana.
+            </p>
+            <p><strong>¿Qué día te viene bien la semana que viene?</strong></p>
+            <div class="cta-row">
+                <a href="tel:+34641277480" class="cta-primary">📞 641 27 74 80</a>
+                <a href="mailto:cmaximiliano@gmail.com" class="cta-secondary">cmaximiliano@gmail.com</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div>
+            <div class="footer-name">Maximiliano Castillo</div>
+            <div class="footer-role">Director de Cuentas B2B</div>
+        </div>
+        <div class="footer-contact">
+            <a href="tel:+34641277480">641 27 74 80</a>
+            <a href="mailto:cmaximiliano@gmail.com">cmaximiliano@gmail.com</a>
+            <span>Marzo 2026</span>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>
