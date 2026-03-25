@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brief del Proyecto Web - Yen Aponte</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* PALETA NATURAL-INDUSTRIAL */
+            --marble-white: #fafaf9;
+            --concrete-light: #f5f5f4;
+            --concrete: #e7e5e4;
+            --concrete-dark: #d6d3d1;
+            
+            --gold-light: #fef3c7;
+            --gold: #f59e0b;
+            --gold-dark: #d97706;
+            
+            --sage-green: #84cc16;
+            --olive-green: #65a30d;
+            --forest-green: #4d7c0f;
+            
+            --text-dark: #292524;
+            --text-medium: #57534e;
+            --text-light: #78716c;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--marble-white) 0%, var(--concrete-light) 100%);
+            background-attachment: fixed;
+            color: var(--text-dark);
+            padding: 30px 20px;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        /* Textura sutil de cemento/mármol */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 4px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.9) 0%, 
+                rgba(250, 250, 249, 0.95) 100%);
+            padding: 60px 40px;
+            text-align: center;
+            border-bottom: 3px solid;
+            border-image: linear-gradient(90deg, var(--sage-green), var(--gold), var(--sage-green)) 1;
+            position: relative;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(132, 204, 22, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-dark) 0%, var(--gold-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-medium);
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--gold-light), rgba(255, 255, 255, 0.9));
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--gold-dark);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        }
+
+        /* BARRA DE PROGRESO */
+        .progress-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--concrete);
+        }
+
+        .progress-bar {
+            background: var(--concrete-light);
+            height: 12px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--sage-green), var(--gold));
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(132, 204, 22, 0.5);
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            font-weight: 600;
+        }
+
+        /* CONTENIDO */
+        .content {
+            padding: 50px 40px;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border-left: 4px solid;
+            background: linear-gradient(135deg, 
+                rgba(132, 204, 22, 0.08), 
+                rgba(245, 158, 11, 0.05));
+            border-color: var(--sage-green);
+        }
+
+        .alert strong {
+            color: var(--forest-green);
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+
+        /* SECCIONES */
+        .section {
+            margin-bottom: 50px;
+            padding: 35px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95), 
+                rgba(250, 250, 249, 0.9));
+            border-radius: 16px;
+            border: 1px solid var(--concrete);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            position: relative;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--sage-green), var(--gold));
+            border-radius: 4px 0 0 4px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            color: var(--text-medium);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        /* PREGUNTAS */
+        .question {
+            margin-bottom: 28px;
+        }
+
+        .question-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .required {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        /* INPUTS */
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="url"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--concrete);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            background: white;
+            color: var(--text-dark);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--sage-green);
+            box-shadow: 
+                0 0 0 3px rgba(132, 204, 22, 0.1),
+                0 4px 12px rgba(0, 0, 0, 0.06);
+            transform: translateY(-1px);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-light);
+        }
+
+        /* CHECKBOXES Y RADIOS */
+        .checkbox-group,
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: white;
+            border: 2px solid var(--concrete-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item:hover,
+        .radio-item:hover {
+            background: var(--gold-light);
+            border-color: var(--gold);
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: var(--sage-green);
+        }
+
+        /* HINTS */
+        .hint {
+            font-size: 0.85rem;
+            color: var(--text-medium);
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        .example {
+            background: linear-gradient(135deg, 
+                rgba(132, 204, 22, 0.05), 
+                rgba(255, 255, 255, 0.9));
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 12px;
+            border-left: 3px solid var(--sage-green);
+        }
+
+        .example strong {
+            color: var(--forest-green);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        /* GRID */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* BOTÓN DE ENVÍO */
+        .btn-submit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--sage-green), var(--olive-green));
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 30px;
+            box-shadow: 0 6px 20px rgba(132, 204, 22, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(132, 204, 22, 0.5);
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: var(--text-medium);
+            margin-top: 25px;
+            font-size: 0.9rem;
+            padding: 20px;
+            background: var(--gold-light);
+            border-radius: 12px;
+            border: 1px solid var(--gold);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .section {
+                padding: 25px 20px;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .progress-container {
+                padding: 15px 20px;
+            }
+        }
+
+        /* ANIMACIONES */
+        .section {
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Brief del Proyecto Web</h1>
+            <p class="subtitle">Yen Aponte</p>
+            <span class="badge">
+                <span>⏱️</span>
+                <span>15-20 minutos</span>
+            </span>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <p class="progress-text">Progreso: <span id="progressPercent">0%</span></p>
+        </div>
+
+        <div class="content">
+            <div class="alert">
+                <strong>💡 Antes de empezar</strong>
+                Ten a mano fotos de tus mejores proyectos, testimonios de clientes y enlaces a webs que te gusten como referencia.
+            </div>
+
+            <form id="briefForm" action="https://formspree.io/f/maqdekge" method="POST">
+                <!-- Campos ocultos para Formspree -->
+                <input type="hidden" name="_subject" value="Nuevo Brief Completado - Yen Aponte">
+                <input type="hidden" name="_replyto" value="cmcvtrader@gmail.com">
+                <input type="hidden" name="_cc" value="cmcvtrader@gmail.com">
+
+                <!-- SECCIÓN 1: INFORMACIÓN BÁSICA -->
+                <div class="section">
+                    <h2 class="section-title">👤 Información Básica</h2>
+                    <p class="section-subtitle">Datos esenciales de la empresa</p>
+
+                    <div class="question">
+                        <label class="question-label">
+                            Nombre completo de la empresa <span class="required">*</span>
+                        </label>
+                        <input type="text" name="empresa_nombre" required placeholder="Ej: Yen Aponte SL">
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="question">
+                            <label class="question-label">
+                                Persona de contacto <span class="required">*</span>
+                            </label>
+                            <input type="text" name="contacto_nombre" required placeholder="Nombre y apellidos">
+                        </div>
+                        <div class="question">
+                            <label class="question-label">
+                                Cargo <span class="required">*</span>
+                            </label>
+                            <input type="text" name="contacto_cargo" required placeholder="Gerente, Director...">
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="question">
+                            <label class="question-label">
+                                Email <span class="required">*</span>
+                            </label>
+                            <input type="email" name="contacto_email" required placeholder="email@ejemplo.com">
+                        </div>
+                        <div class="question">
+                            <label class="question-label">
+                                Teléfono <span class="required">*</span>
+                            </label>
+                            <input type="tel" name="contacto_telefono" required placeholder="+34 600 000 000">
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">
+                            Dirección completa <span class="required">*</span>
+                        </label>
+                        <input type="text" name="direccion" required placeholder="Calle, número, CP, ciudad">
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Año de fundación</label>
+                        <input type="text" name="anio_fundacion" placeholder="Ej: 2000">
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: SOBRE LA EMPRESA -->
+                <div class="section">
+                    <h2 class="section-title">🏢 Sobre la Empresa</h2>
+                    <p class="section-subtitle">Historia y esencia de la Empresa</p>
+
+                    <div class="question">
+                        <label class="question-label">
+                            Descripción de la empresa (2-3 párrafos) <span class="required">*</span>
+                        </label>
+                        <textarea name="descripcion_empresa" required placeholder="¿Qué hace La Empresa? ¿Cuál es vuestra filosofía? ¿Qué os diferencia de la competencia?"></textarea>
+                        <div class="example">
+                            <strong>Ejemplo:</strong>
+                            Somos una empresa familiar con más de 15 años de experiencia en reformas integrales en la Costa Blanca. Nos especializamos en transformar viviendas combinando diseño mediterráneo moderno con acabados de alta calidad...
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">
+                            Eslogan o frase principal <span class="required">*</span>
+                        </label>
+                        <input type="text" name="eslogan" required placeholder="Ej: Transformamos viviendas en la Costa Blanca">
+                        <p class="hint">Esta frase aparecerá en la portada de la web</p>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Valores de la empresa (máximo 5)</label>
+                        <textarea name="valores" placeholder="Ej: Calidad, Compromiso, Transparencia, Innovación, Confianza"></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Cuántas personas trabajan en la empresa?</label>
+                        <select name="num_empleados">
+                            <option value="">Selecciona...</option>
+                            <option value="1-5">1-5 personas</option>
+                            <option value="6-10">6-10 personas</option>
+                            <option value="11-20">11-20 personas</option>
+                            <option value="20+">Más de 20 personas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: SERVICIOS -->
+                <div class="section">
+                    <h2 class="section-title">⚙️ Servicios Principales</h2>
+                    <p class="section-subtitle">Qué servicios queréis destacar en la web</p>
+
+                    <div class="question">
+                        <label class="question-label">
+                            ¿Cuáles son vuestros servicios principales? <span class="required">*</span>
+                        </label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="servicios[]" value="reformas_integrales">
+                                <span>Reformas Integrales</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="servicios[]" value="cocinas">
+                                <span>Cocinas de Diseño</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="servicios[]" value="banos">
+                                <span>Baños Modernos</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="servicios[]" value="terrazas">
+                                <span>Terrazas y Exteriores</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="servicios[]" value="villas">
+                                <span>Rehabilitación de Villas</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="servicios[]" value="suelos">
+                                <span>Instalación de Suelos</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="servicios[]" value="pintura">
+                                <span>Pintura y Acabados</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="servicios[]" value="otros">
+                                <span>Otros (especificar abajo)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Otros servicios no listados</label>
+                        <textarea name="otros_servicios" placeholder="Describe otros servicios que ofrezcáis..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">
+                            Describe brevemente cada servicio principal
+                        </label>
+                        <textarea name="descripcion_servicios" placeholder="Ejemplo:
+
+Reformas Integrales: Transformamos tu hogar por completo, desde el diseño inicial hasta el último detalle...
+
+Cocinas de Diseño: Creamos espacios funcionales y modernos..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Queréis mostrar precios orientativos?</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="mostrar_precios" value="si">
+                                <span>Sí, mostrar precios orientativos (ej: "desde 5.000€")</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="mostrar_precios" value="no" checked>
+                                <span>No, prefiero presupuesto personalizado</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4: PÚBLICO OBJETIVO -->
+                <div class="section">
+                    <h2 class="section-title">🎯 Público Objetivo</h2>
+                    <p class="section-subtitle">A quién van dirigidos vuestros servicios</p>
+
+                    <div class="question">
+                        <label class="question-label">
+                            ¿Cuál es vuestro cliente ideal? <span class="required">*</span>
+                        </label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="cliente_tipo[]" value="propietarios">
+                                <span>Propietarios de viviendas (particulares)</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="cliente_tipo[]" value="inversores">
+                                <span>Inversores inmobiliarios</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="cliente_tipo[]" value="segunda_residencia">
+                                <span>Segunda residencia / Extranjeros</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="cliente_tipo[]" value="empresas">
+                                <span>Empresas / Locales comerciales</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="cliente_tipo[]" value="lujo">
+                                <span>Propiedades de lujo / Alto standing</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">
+                            Zona geográfica principal <span class="required">*</span>
+                        </label>
+                        <input type="text" name="zona_actuacion" required placeholder="Ej: Alicante, Orihuela, Torrevieja, Costa Blanca Sur...">
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Rango de presupuesto medio de clientes</label>
+                        <select name="presupuesto_cliente">
+                            <option value="">Selecciona...</option>
+                            <option value="bajo">5.000€ - 15.000€ (reformas pequeñas)</option>
+                            <option value="medio">15.000€ - 40.000€ (reformas medias)</option>
+                            <option value="alto">40.000€ - 80.000€ (reformas grandes)</option>
+                            <option value="premium">+80.000€ (reformas premium/villas)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 5: COMPETENCIA -->
+                <div class="section">
+                    <h2 class="section-title">📊 Competencia y Diferenciación</h2>
+                    <p class="section-subtitle">Qué os hace únicos</p>
+
+                    <div class="question">
+                        <label class="question-label">Principales competidores (webs o nombres)</label>
+                        <textarea name="competidores" placeholder="Ej: ReformasAlicante.com, Villa Renovations, etc."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">
+                            ¿Qué os hace diferentes? <span class="required">*</span>
+                        </label>
+                        <textarea name="diferenciacion" required placeholder="Ej: Materiales premium, acabados personalizados, equipo propio sin subcontratas, garantías extendidas..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Certificaciones, premios o reconocimientos</label>
+                        <textarea name="certificaciones" placeholder="Ej: Licencia de construcción, ISO, premios locales, años de experiencia..."></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 6: MATERIAL VISUAL -->
+                <div class="section">
+                    <h2 class="section-title">📸 Material Visual</h2>
+                    <p class="section-subtitle">Uno de los aspectos más importantes</p>
+
+                    <div class="question">
+                        <label class="question-label">
+                            ¿Tenéis fotos profesionales? <span class="required">*</span>
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="tiene_fotos" value="si_profesionales" required>
+                                <span>Sí, fotos profesionales (fotógrafo)</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tiene_fotos" value="si_buena_calidad">
+                                <span>Sí, fotos propias de buena calidad</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tiene_fotos" value="baja_calidad">
+                                <span>Tengo fotos pero de calidad mejorable</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tiene_fotos" value="no">
+                                <span>No (necesito sesión fotográfica)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Cuántas fotos de calidad tenéis?</label>
+                        <select name="cantidad_fotos">
+                            <option value="">Selecciona...</option>
+                            <option value="0-5">Menos de 5 fotos</option>
+                            <option value="5-15">Entre 5 y 15 fotos</option>
+                            <option value="15-30">Entre 15 y 30 fotos</option>
+                            <option value="30+">Más de 30 fotos</option>
+                        </select>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Tenéis logo?</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="tiene_logo" value="si_vectorial">
+                                <span>Sí, formato vectorial (.ai, .eps, .svg)</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tiene_logo" value="si_imagen">
+                                <span>Sí, solo imagen (.jpg, .png)</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tiene_logo" value="no">
+                                <span>No tengo logo profesional</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Colores corporativos</label>
+                        <input type="text" name="colores_corporativos" placeholder="Ej: Azul marino #1e3a8a, Gris #64748b">
+                        <p class="hint">Si no tenéis, elegiremos colores profesionales</p>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 7: TESTIMONIOS -->
+                <div class="section">
+                    <h2 class="section-title">⭐ Testimonios y Casos de Éxito</h2>
+                    <p class="section-subtitle">La voz de vuestros clientes</p>
+
+                    <div class="question">
+                        <label class="question-label">
+                            Mínimo 3 testimonios de clientes <span class="required">*</span>
+                        </label>
+                        <textarea name="testimonios" required placeholder="Formato:
+
+1. Nombre: Juan Pérez
+   Testimonio: 'La reforma de mi cocina superó todas mis expectativas...'
+   Proyecto: Reforma integral apartamento
+
+2. (siguiente testimonio)"></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Proyectos destacados</label>
+                        <textarea name="casos_exito" placeholder="Describe 2-3 proyectos especiales: tipo, reto, solución, resultado..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Reseñas en Google/Facebook</label>
+                        <input type="url" name="enlace_resenas" placeholder="https://...">
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 8: OBJETIVOS -->
+                <div class="section">
+                    <h2 class="section-title">🎯 Objetivos de la Web</h2>
+                    <p class="section-subtitle">Qué queréis conseguir</p>
+
+                    <div class="question">
+                        <label class="question-label">
+                            Objetivo principal <span class="required">*</span>
+                        </label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="objetivos[]" value="captar_leads">
+                                <span>Conseguir solicitudes de presupuesto</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="objetivos[]" value="mostrar_portfolio">
+                                <span>Mostrar portfolio de proyectos</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="objetivos[]" value="prestigio">
+                                <span>Generar confianza y prestigio</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="objetivos[]" value="posicionamiento">
+                                <span>Aparecer en Google</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="objetivos[]" value="diferenciarnos">
+                                <span>Diferenciarnos de la competencia</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Acción principal que debe hacer el visitante</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="cta_principal" value="formulario">
+                                <span>Rellenar formulario de presupuesto</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="cta_principal" value="telefono">
+                                <span>Llamar por teléfono</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="cta_principal" value="whatsapp">
+                                <span>Contactar por WhatsApp</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="cta_principal" value="email">
+                                <span>Enviar email</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 9: FUNCIONALIDADES -->
+                <div class="section">
+                    <h2 class="section-title">⚡ Funcionalidades Deseadas</h2>
+                    <p class="section-subtitle">Qué características debe tener la web</p>
+
+                    <div class="question">
+                        <label class="question-label">Funcionalidades que queréis</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="funcionalidades[]" value="formulario" checked>
+                                <span>Formulario de presupuesto</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="funcionalidades[]" value="galeria" checked>
+                                <span>Galería de proyectos (antes/después)</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="funcionalidades[]" value="blog">
+                                <span>Blog/Noticias</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="funcionalidades[]" value="whatsapp" checked>
+                                <span>Botón de WhatsApp flotante</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="funcionalidades[]" value="chat">
+                                <span>Chat en vivo</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="funcionalidades[]" value="mapa">
+                                <span>Mapa de zona de actuación</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="funcionalidades[]" value="calculadora">
+                                <span>Calculadora de presupuestos</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="funcionalidades[]" value="multiidioma">
+                                <span>Versión en inglés</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 10: REFERENCIAS VISUALES -->
+                <div class="section">
+                    <h2 class="section-title">🎨 Referencias Visuales</h2>
+                    <p class="section-subtitle">Muéstranos qué estilo te gusta</p>
+
+                    <div class="question">
+                        <label class="question-label">Estilo visual preferido</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="estilo_visual" value="minimalista_lujo">
+                                <span>Minimalista y lujoso (mucho blanco, fotos grandes)</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="estilo_visual" value="moderno_dinamico">
+                                <span>Moderno y dinámico (colores vivos, animaciones)</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="estilo_visual" value="clasico_elegante">
+                                <span>Clásico y elegante (colores sobrios, atemporal)</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="estilo_visual" value="mediterraneo">
+                                <span>Mediterráneo (azules, blancos, costero)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">
+                            Webs de referencia <span class="required">*</span>
+                        </label>
+                        <textarea name="webs_referencia" required placeholder="Ej:
+- https://www.koolrenovations.com/ (me gusta el diseño limpio)
+- https://www.ejemplo2.com (me gusta cómo muestran proyectos)
+
+No tienen que ser de reformas. Pueden ser de cualquier sector."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Qué NO te gusta en diseño web?</label>
+                        <textarea name="no_me_gusta" placeholder="Ej: Diseños recargados, colores chillones, demasiadas animaciones, popups molestos..."></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 11: REDES SOCIALES -->
+                <div class="section">
+                    <h2 class="section-title">📱 Redes Sociales</h2>
+                    <p class="section-subtitle">Vuestra presencia digital</p>
+
+                    <div class="grid-2">
+                        <div class="question">
+                            <label class="question-label">Facebook</label>
+                            <input type="url" name="facebook" placeholder="https://facebook.com/...">
+                        </div>
+                        <div class="question">
+                            <label class="question-label">Instagram</label>
+                            <input type="url" name="instagram" placeholder="https://instagram.com/...">
+                        </div>
+                        <div class="question">
+                            <label class="question-label">TikTok</label>
+                            <input type="url" name="tiktok" placeholder="https://tiktok.com/@...">
+                        </div>
+                        <div class="question">
+                            <label class="question-label">LinkedIn</label>
+                            <input type="url" name="linkedin" placeholder="https://linkedin.com/...">
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Tenéis Google My Business?</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="google_business" value="si">
+                                <span>Sí</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="google_business" value="no">
+                                <span>No, pero queremos crear una</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 12: TIMING -->
+                <div class="section">
+                    <h2 class="section-title">⏰ Timing y Presupuesto</h2>
+                    <p class="section-subtitle">Planifiquemos el proyecto</p>
+
+                    <div class="question">
+                        <label class="question-label">
+                            ¿Cuándo necesitáis la web lista? <span class="required">*</span>
+                        </label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="urgencia" value="urgente" required>
+                                <span>Lo antes posible (1-2 semanas)</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="urgencia" value="normal">
+                                <span>Normal (3-4 semanas)</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="urgencia" value="flexible">
+                                <span>Flexible (1-2 meses)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Tenéis dominio web?</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="tiene_dominio" value="si">
+                                <span>Sí, ya tenemos dominio</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="tiene_dominio" value="no">
+                                <span>No, hay que registrar uno</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Si tenéis dominio, ¿cuál es?</label>
+                        <input type="text" name="dominio_actual" placeholder="Ej: yenaponte.es">
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Queréis mantenimiento mensual?</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="mantenimiento" value="si">
+                                <span>Sí, actualización de contenidos</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="mantenimiento" value="no">
+                                <span>No, lo gestionaré yo</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="mantenimiento" value="dudas">
+                                <span>Quiero más información</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 13: INFORMACIÓN ADICIONAL -->
+                <div class="section">
+                    <h2 class="section-title">💬 Información Adicional</h2>
+                    <p class="section-subtitle">¿Algo más que debamos saber?</p>
+
+                    <div class="question">
+                        <label class="question-label">Comentarios adicionales</label>
+                        <textarea name="info_adicional" placeholder="Cualquier detalle, duda o requisito especial..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Cómo prefieres comunicarte durante el proyecto?</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="comunicacion[]" value="email">
+                                <span>Email</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="comunicacion[]" value="telefono">
+                                <span>Teléfono</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="comunicacion[]" value="whatsapp">
+                                <span>WhatsApp</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="comunicacion[]" value="videollamada">
+                                <span>Videollamadas</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" name="comunicacion[]" value="presencial">
+                                <span>Reuniones presenciales</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTÓN DE ENVÍO -->
+                <button type="submit" class="btn-submit">
+                    <span>📤</span>
+                    <span>Enviar Brief Completo</span>
+                </button>
+
+                <div class="footer-note">
+                    <strong>🔒 Información protegida</strong><br>
+                    Al enviar recibirás una confirmación por email. Tus datos están seguros y solo se usan para este proyecto.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('briefForm');
+        const progressBar = document.getElementById('progressBar');
+        const progressPercent = document.getElementById('progressPercent');
+        
+        // Calcular y actualizar progreso
+        function updateProgress() {
+            const inputs = form.querySelectorAll('input:not([type="hidden"]), textarea, select');
+            const filled = Array.from(inputs).filter(input => {
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    return input.checked;
+                }
+                return input.value.trim() !== '';
+            }).length;
+            
+            const total = inputs.length;
+            const percentage = Math.round((filled / total) * 100);
+            progressBar.style.width = percentage + '%';
+            progressPercent.textContent = percentage + '%';
+        }
+
+        // Event listeners
+        form.addEventListener('input', updateProgress);
+        form.addEventListener('change', updateProgress);
+
+        // Al enviar el formulario
+        form.addEventListener('submit', function(e) {
+            const submitBtn = document.querySelector('.btn-submit');
+            submitBtn.innerHTML = '<span>⏳</span><span>Enviando respuestas...</span>';
+            submitBtn.disabled = true;
+            
+            // Formspree manejará el envío
+        });
+
+        // Inicializar progreso
+        updateProgress();
+    </script>
+</body>
+</html>
