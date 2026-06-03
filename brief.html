@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brief del Proyecto Web</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --marble-white: #fafaf9;
+            --concrete-light: #f5f5f4;
+            --concrete: #e7e5e4;
+            --concrete-dark: #d6d3d1;
+            --gold-light: #fef3c7;
+            --gold: #f59e0b;
+            --gold-dark: #d97706;
+            --sage-green: #84cc16;
+            --olive-green: #65a30d;
+            --forest-green: #4d7c0f;
+            --text-dark: #292524;
+            --text-medium: #57534e;
+            --text-light: #78716c;
+            --accent: #84cc16;
+            --accent-dark: #65a30d;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, var(--marble-white) 0%, var(--concrete-light) 100%);
+            background-attachment: fixed;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ───── PANTALLA SELECTOR ───── */
+        #sectorScreen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .selector-wrapper {
+            max-width: 720px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .selector-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--gold-dark);
+            margin-bottom: 32px;
+            opacity: 0;
+            animation: fadeUp 0.6s 0.1s forwards;
+        }
+
+        .selector-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3.4rem);
+            color: var(--text-dark);
+            line-height: 1.15;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeUp 0.6s 0.2s forwards;
+        }
+
+        .selector-title em {
+            font-style: italic;
+            background: linear-gradient(135deg, var(--gold-dark), var(--sage-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .selector-subtitle {
+            color: var(--text-medium);
+            font-size: 1.1rem;
+            margin-bottom: 52px;
+            opacity: 0;
+            animation: fadeUp 0.6s 0.3s forwards;
+        }
+
+        .sector-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            opacity: 0;
+            animation: fadeUp 0.6s 0.45s forwards;
+        }
+
+        @media (max-width: 560px) {
+            .sector-grid { grid-template-columns: 1fr; }
+        }
+
+        .sector-card {
+            background: rgba(255,255,255,0.92);
+            border: 2px solid var(--concrete);
+            border-radius: 18px;
+            padding: 32px 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sector-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(132,204,22,0.06), rgba(245,158,11,0.04));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .sector-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.1);
+        }
+
+        .sector-card:hover::before { opacity: 1; }
+
+        .sector-icon {
+            font-size: 2.4rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .sector-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .sector-desc {
+            font-size: 0.88rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .sector-arrow {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: var(--gold-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .sector-card:hover .sector-arrow {
+            background: var(--gold);
+            transform: translateX(2px);
+        }
+
+        /* ───── BRIEF (oculto hasta elegir) ───── */
+        #briefApp {
+            display: none;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.8) inset;
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(250,250,249,0.95));
+            padding: 60px 40px;
+            text-align: center;
+            border-bottom: 3px solid;
+            border-image: linear-gradient(90deg, var(--sage-green), var(--gold), var(--sage-green)) 1;
+            position: relative;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 30% 20%, rgba(132,204,22,0.05), transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(245,158,11,0.05), transparent 50%);
+            pointer-events: none;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 24px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: 1.5px solid var(--concrete);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.82rem;
+            color: var(--text-medium);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            z-index: 2;
+        }
+
+        .back-btn:hover { border-color: var(--gold); color: var(--gold-dark); }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            background: linear-gradient(135deg, var(--text-dark), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-medium);
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--gold-light), rgba(255,255,255,0.9));
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--gold-dark);
+        }
+
+        .sector-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(132,204,22,0.12);
+            border: 1.5px solid var(--sage-green);
+            border-radius: 50px;
+            padding: 5px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--forest-green);
+            margin-top: 12px;
+        }
+
+        .progress-container {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--concrete);
+        }
+
+        .progress-bar {
+            background: var(--concrete-light);
+            height: 10px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--sage-green), var(--gold));
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+            border-radius: 20px;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 6px;
+            font-size: 0.82rem;
+            color: var(--text-medium);
+            font-weight: 600;
+        }
+
+        .content { padding: 50px 40px; }
+
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border-left: 4px solid var(--sage-green);
+            background: linear-gradient(135deg, rgba(132,204,22,0.08), rgba(245,158,11,0.04));
+        }
+
+        .alert strong { color: var(--forest-green); display: block; margin-bottom: 6px; font-size: 1.02rem; }
+
+        .section {
+            margin-bottom: 50px;
+            padding: 35px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(250,250,249,0.9));
+            border-radius: 16px;
+            border: 1px solid var(--concrete);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            position: relative;
+            animation: fadeInUp 0.5s ease-out backwards;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: linear-gradient(180deg, var(--sage-green), var(--gold));
+            border-radius: 4px 0 0 4px;
+        }
+
+        .section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.7rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle { color: var(--text-medium); margin-bottom: 28px; font-size: 0.93rem; }
+
+        .question { margin-bottom: 26px; }
+
+        .question-label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-size: 0.97rem;
+        }
+
+        .required { color: #ef4444; font-weight: 700; }
+
+        input[type="text"], input[type="email"], input[type="tel"], input[type="url"], textarea, select {
+            width: 100%;
+            padding: 13px 16px;
+            border: 2px solid var(--concrete);
+            border-radius: 10px;
+            font-size: 0.97rem;
+            font-family: inherit;
+            background: white;
+            color: var(--text-dark);
+            transition: all 0.25s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--sage-green);
+            box-shadow: 0 0 0 3px rgba(132,204,22,0.12), 0 4px 12px rgba(0,0,0,0.05);
+            transform: translateY(-1px);
+        }
+
+        textarea { min-height: 110px; resize: vertical; line-height: 1.6; }
+        input::placeholder, textarea::placeholder { color: var(--text-light); }
+
+        .checkbox-group, .radio-group { display: flex; flex-direction: column; gap: 10px; }
+
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 16px;
+            background: white;
+            border: 2px solid var(--concrete-light);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 0.95rem;
+        }
+
+        .checkbox-item:hover, .radio-item:hover { background: var(--gold-light); border-color: var(--gold); }
+
+        input[type="checkbox"], input[type="radio"] {
+            width: 20px; height: 20px;
+            cursor: pointer;
+            accent-color: var(--sage-green);
+            flex-shrink: 0;
+        }
+
+        .hint { font-size: 0.83rem; color: var(--text-medium); margin-top: 5px; font-style: italic; }
+
+        .example {
+            background: linear-gradient(135deg, rgba(132,204,22,0.05), rgba(255,255,255,0.9));
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border-left: 3px solid var(--sage-green);
+            font-size: 0.9rem;
+        }
+
+        .example strong { color: var(--forest-green); display: block; margin-bottom: 5px; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        .btn-submit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--sage-green), var(--olive-green));
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+            margin-top: 30px;
+            box-shadow: 0 6px 20px rgba(132,204,22,0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-submit:hover::before { left: 100%; }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(132,204,22,0.45); background: linear-gradient(135deg, var(--gold), var(--gold-dark)); }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .footer-note {
+            text-align: center;
+            color: var(--text-medium);
+            margin-top: 22px;
+            font-size: 0.88rem;
+            padding: 18px;
+            background: var(--gold-light);
+            border-radius: 12px;
+            border: 1px solid var(--gold);
+        }
+
+        /* ─── hidden helpers ─── */
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            #briefApp { padding: 15px; }
+            h1 { font-size: 1.8rem; }
+            .content { padding: 28px 18px; }
+            .section { padding: 22px 16px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .progress-container { padding: 14px 18px; }
+            header { padding: 50px 24px 40px; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .section:nth-child(1) { animation-delay: 0.05s; }
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.15s; }
+        .section:nth-child(4) { animation-delay: 0.2s; }
+        .section:nth-child(5) { animation-delay: 0.25s; }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════ PANTALLA 1: SELECTOR DE SECTOR ══════════════ -->
+<div id="sectorScreen">
+    <div class="selector-wrapper">
+        <p class="selector-brand">Yen Aponte · Brief del Proyecto Web</p>
+        <h2 class="selector-title">¿En qué sector<br>trabajas <em>tú</em>?</h2>
+        <p class="selector-subtitle">Selecciona tu sector y el formulario se adaptará a tu negocio.</p>
+
+        <div class="sector-grid">
+            <div class="sector-card" onclick="loadSector('reformas')">
+                <span class="sector-icon">🏗️</span>
+                <div class="sector-name">Reformas y Construcción</div>
+                <p class="sector-desc">Reformas integrales, cocinas, baños, rehabilitación de villas y exteriores.</p>
+                <div class="sector-arrow">→</div>
+            </div>
+            <div class="sector-card" onclick="loadSector('escritura')">
+                <span class="sector-icon">📖</span>
+                <div class="sector-name">Escritura y Edición</div>
+                <p class="sector-desc">Autores, escritoras, editores, maquetación y publicación de libros.</p>
+                <div class="sector-arrow">→</div>
+            </div>
+            <div class="sector-card" onclick="loadSector('fotografia')">
+                <span class="sector-icon">📷</span>
+                <div class="sector-name">Fotografía y Diseño</div>
+                <p class="sector-desc">Fotógrafos, diseñadores gráficos, directores creativos y artistas visuales.</p>
+                <div class="sector-arrow">→</div>
+            </div>
+            <div class="sector-card" onclick="loadSector('coaching')">
+                <span class="sector-icon">🌱</span>
+                <div class="sector-name">Coaching y Servicios Personales</div>
+                <p class="sector-desc">Coaches, terapeutas, consultores, mentores y formadores.</p>
+                <div class="sector-arrow">→</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ PANTALLA 2: BRIEF ══════════════ -->
+<div id="briefApp">
+    <div class="container">
+        <header>
+            <button class="back-btn" onclick="goBack()">← Cambiar sector</button>
+            <h1 id="headerTitle">📋 Brief del Proyecto Web</h1>
+            <p class="subtitle" id="headerSubtitle">Yen Aponte</p>
+            <span class="badge">⏱️ 15-20 minutos</span><br>
+            <span class="sector-pill" id="sectorPill"></span>
+        </header>
+
+        <div class="progress-container">
+            <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+            <p class="progress-text">Progreso: <span id="progressPercent">0%</span></p>
+        </div>
+
+        <div class="content">
+            <div class="alert">
+                <strong id="alertTitle">💡 Antes de empezar</strong>
+                <span id="alertText">Ten a mano fotos de tus mejores proyectos, testimonios de clientes y enlaces a webs que te gusten como referencia.</span>
+            </div>
+
+            <form id="briefForm" action="https://formspree.io/f/maqdekge" method="POST">
+                <input type="hidden" name="_subject" id="formSubject" value="Nuevo Brief - Yen Aponte">
+                <input type="hidden" name="_replyto" value="cmcvtrader@gmail.com">
+                <input type="hidden" name="_cc" value="cmcvtrader@gmail.com">
+                <input type="hidden" name="sector" id="sectorHidden" value="">
+
+                <!-- SECCIÓN 1: INFORMACIÓN BÁSICA -->
+                <div class="section">
+                    <h2 class="section-title">👤 Información Básica</h2>
+                    <p class="section-subtitle" id="s1sub">Datos esenciales del proyecto</p>
+
+                    <div class="question">
+                        <label class="question-label">Nombre completo <span class="required">*</span></label>
+                        <input type="text" name="empresa_nombre" required id="empresaNombrePlaceholder" placeholder="Tu nombre o nombre de tu empresa">
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="question">
+                            <label class="question-label">Persona de contacto <span class="required">*</span></label>
+                            <input type="text" name="contacto_nombre" required placeholder="Nombre y apellidos">
+                        </div>
+                        <div class="question">
+                            <label class="question-label">Cargo / Rol <span class="required">*</span></label>
+                            <input type="text" name="contacto_cargo" required id="cargoPlaceholder" placeholder="Directora, Autora...">
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="question">
+                            <label class="question-label">Email <span class="required">*</span></label>
+                            <input type="email" name="contacto_email" required placeholder="email@ejemplo.com">
+                        </div>
+                        <div class="question">
+                            <label class="question-label">Teléfono <span class="required">*</span></label>
+                            <input type="tel" name="contacto_telefono" required placeholder="+34 600 000 000">
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Ciudad / País</label>
+                        <input type="text" name="ciudad" placeholder="Ej: Alicante, España">
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label" id="fundacionLabel">Año de inicio de actividad</label>
+                        <input type="text" name="anio_fundacion" placeholder="Ej: 2010">
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: SOBRE EL PROYECTO -->
+                <div class="section">
+                    <h2 class="section-title" id="s2title">🏢 Sobre tu Proyecto</h2>
+                    <p class="section-subtitle" id="s2sub">Tu historia y esencia</p>
+
+                    <div class="question">
+                        <label class="question-label">Descripción (2-3 párrafos) <span class="required">*</span></label>
+                        <textarea name="descripcion_empresa" required id="descPlaceholder" placeholder="¿Qué haces? ¿Cuál es tu filosofía? ¿Qué te diferencia?"></textarea>
+                        <div class="example">
+                            <strong>Ejemplo:</strong>
+                            <span id="descExample">Soy una empresa familiar con más de 15 años de experiencia en reformas integrales en la Costa Blanca...</span>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Eslogan o frase principal <span class="required">*</span></label>
+                        <input type="text" name="eslogan" required id="esloganPlaceholder" placeholder="Ej: Transformamos viviendas en la Costa Blanca">
+                        <p class="hint">Esta frase aparecerá en la portada de la web</p>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Valores (máximo 5)</label>
+                        <textarea name="valores" placeholder="Ej: Calidad, Compromiso, Transparencia, Creatividad, Confianza"></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label" id="empleadosLabel">¿Cuántas personas trabajan contigo?</label>
+                        <select name="num_empleados">
+                            <option value="">Selecciona...</option>
+                            <option value="solo">Solo/a</option>
+                            <option value="1-5">1-5 personas</option>
+                            <option value="6-10">6-10 personas</option>
+                            <option value="11-20">11-20 personas</option>
+                            <option value="20+">Más de 20 personas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: SERVICIOS (dinámica) -->
+                <div class="section">
+                    <h2 class="section-title" id="s3title">⚙️ Servicios Principales</h2>
+                    <p class="section-subtitle" id="s3sub">Qué servicios quieres destacar en la web</p>
+
+                    <div class="question">
+                        <label class="question-label">¿Cuáles son tus servicios principales? <span class="required">*</span></label>
+                        <div class="checkbox-group" id="serviciosGroup">
+                            <!-- se rellena dinámicamente -->
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Otros servicios no listados</label>
+                        <textarea name="otros_servicios" id="otrosServiciosPlaceholder" placeholder="Describe otros servicios que ofrezcas..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Describe brevemente cada servicio principal</label>
+                        <textarea name="descripcion_servicios" id="descServiciosPlaceholder" placeholder="Servicio 1: descripción breve&#10;Servicio 2: descripción breve..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label" id="preciosLabel">¿Quieres mostrar precios orientativos?</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="mostrar_precios" value="si">
+                                <span id="preciosSiText">Sí, mostrar precios orientativos</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="mostrar_precios" value="no" checked>
+                                <span>No, prefiero presupuesto/consulta personalizada</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 4: PÚBLICO OBJETIVO (dinámica) -->
+                <div class="section">
+                    <h2 class="section-title">🎯 Público Objetivo</h2>
+                    <p class="section-subtitle" id="s4sub">A quién va dirigido tu trabajo</p>
+
+                    <div class="question">
+                        <label class="question-label">¿Cuál es tu cliente/lector ideal? <span class="required">*</span></label>
+                        <div class="checkbox-group" id="clienteGroup">
+                            <!-- se rellena dinámicamente -->
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Zona geográfica principal <span class="required">*</span></label>
+                        <input type="text" name="zona_actuacion" required id="zonaPlaceholder" placeholder="Ej: España, Latinoamérica, Internacional...">
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label" id="presupuestoLabel">Rango de inversión/precio medio del cliente</label>
+                        <div class="checkbox-group" id="presupuestoGroup">
+                            <!-- se rellena dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 5: COMPETENCIA -->
+                <div class="section">
+                    <h2 class="section-title">📊 Referentes y Diferenciación</h2>
+                    <p class="section-subtitle">Qué te hace único/a</p>
+
+                    <div class="question">
+                        <label class="question-label" id="competidoresLabel">Principales referentes o competidores (webs o nombres)</label>
+                        <textarea name="competidores" id="competidoresPlaceholder" placeholder="Ej: Referente1.com, Referente2..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Qué te hace diferente? <span class="required">*</span></label>
+                        <textarea name="diferenciacion" required id="diferenciacionPlaceholder" placeholder="Ej: Tu método único, tu experiencia, tu enfoque personal..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label" id="certificacionesLabel">Certificaciones, premios o reconocimientos</label>
+                        <textarea name="certificaciones" id="certificacionesPlaceholder" placeholder="Ej: Premios, formaciones destacadas, reconocimientos..."></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 6: MATERIAL VISUAL -->
+                <div class="section">
+                    <h2 class="section-title">📸 Material Visual</h2>
+                    <p class="section-subtitle">Uno de los aspectos más importantes</p>
+
+                    <div class="question">
+                        <label class="question-label" id="fotosLabel">¿Tienes fotos/imágenes profesionales? <span class="required">*</span></label>
+                        <div class="radio-group" id="fotosGroup">
+                            <!-- se rellena dinámicamente -->
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Cuántas imágenes de calidad tienes?</label>
+                        <select name="cantidad_fotos">
+                            <option value="">Selecciona...</option>
+                            <option value="0-5">Menos de 5</option>
+                            <option value="5-15">Entre 5 y 15</option>
+                            <option value="15-30">Entre 15 y 30</option>
+                            <option value="30+">Más de 30</option>
+                        </select>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Tienes logo?</label>
+                        <div class="radio-group">
+                            <label class="radio-item"><input type="radio" name="tiene_logo" value="si_vectorial"><span>Sí, formato vectorial (.ai, .eps, .svg)</span></label>
+                            <label class="radio-item"><input type="radio" name="tiene_logo" value="si_imagen"><span>Sí, solo imagen (.jpg, .png)</span></label>
+                            <label class="radio-item"><input type="radio" name="tiene_logo" value="no"><span>No tengo logo profesional</span></label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Colores corporativos</label>
+                        <input type="text" name="colores_corporativos" placeholder="Ej: Azul #1e3a8a, Gris #64748b">
+                        <p class="hint">Si no tienes, elegiremos colores profesionales</p>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 7: TESTIMONIOS -->
+                <div class="section">
+                    <h2 class="section-title" id="s7title">⭐ Testimonios y Casos de Éxito</h2>
+                    <p class="section-subtitle" id="s7sub">La voz de quienes han trabajado contigo</p>
+
+                    <div class="question">
+                        <label class="question-label">Mínimo 3 testimonios <span class="required">*</span></label>
+                        <textarea name="testimonios" required id="testimoniosPlaceholder" placeholder="1. Nombre: Ana García&#10;   Testimonio: '...'&#10;   Contexto: ...&#10;&#10;2. (siguiente testimonio)"></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label" id="casosLabel">Proyectos / trabajos destacados</label>
+                        <textarea name="casos_exito" id="casosPlaceholder" placeholder="Describe 2-3 trabajos especiales..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Reseñas en Google / Goodreads / Amazon u otros</label>
+                        <input type="url" name="enlace_resenas" placeholder="https://...">
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 8: OBJETIVOS -->
+                <div class="section">
+                    <h2 class="section-title">🎯 Objetivos de la Web</h2>
+                    <p class="section-subtitle">Qué quieres conseguir</p>
+
+                    <div class="question">
+                        <label class="question-label">Objetivo principal <span class="required">*</span></label>
+                        <div class="checkbox-group" id="objetivosGroup">
+                            <!-- se rellena dinámicamente -->
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Acción principal que debe hacer el visitante</label>
+                        <div class="radio-group">
+                            <label class="radio-item"><input type="radio" name="cta_principal" value="formulario"><span>Rellenar formulario de contacto/presupuesto</span></label>
+                            <label class="radio-item"><input type="radio" name="cta_principal" value="telefono"><span>Llamar por teléfono</span></label>
+                            <label class="radio-item"><input type="radio" name="cta_principal" value="whatsapp"><span>Contactar por WhatsApp</span></label>
+                            <label class="radio-item"><input type="radio" name="cta_principal" value="email"><span>Enviar email</span></label>
+                            <label class="radio-item" id="ctaExtraItem" style="display:none"><input type="radio" name="cta_principal" value="comprar"><span id="ctaExtraText">Comprar / Contratar directamente</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 9: FUNCIONALIDADES -->
+                <div class="section">
+                    <h2 class="section-title">⚡ Funcionalidades Deseadas</h2>
+                    <p class="section-subtitle">Qué características debe tener la web</p>
+
+                    <div class="question">
+                        <label class="question-label">Funcionalidades que quieres</label>
+                        <div class="checkbox-group" id="funcionalidadesGroup">
+                            <!-- se rellena dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 10: REFERENCIAS VISUALES -->
+                <div class="section">
+                    <h2 class="section-title">🎨 Referencias Visuales</h2>
+                    <p class="section-subtitle">Muéstranos qué estilo te gusta</p>
+
+                    <div class="question">
+                        <label class="question-label">Estilo visual preferido</label>
+                        <div class="radio-group">
+                            <label class="radio-item"><input type="radio" name="estilo_visual" value="minimalista_lujo"><span>Minimalista y lujoso (mucho blanco, fotos grandes)</span></label>
+                            <label class="radio-item"><input type="radio" name="estilo_visual" value="moderno_dinamico"><span>Moderno y dinámico (colores vivos, animaciones)</span></label>
+                            <label class="radio-item"><input type="radio" name="estilo_visual" value="clasico_elegante"><span>Clásico y elegante (colores sobrios, atemporal)</span></label>
+                            <label class="radio-item"><input type="radio" name="estilo_visual" value="mediterraneo" id="estilo_med"><span id="estiloMedText">Mediterráneo (azules, blancos, costero)</span></label>
+                            <label class="radio-item" id="estiloExtra" style="display:none"><input type="radio" name="estilo_visual" value="editorial"><span id="estiloExtraText">Editorial / Literario (tipografía protagonista)</span></label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Webs de referencia <span class="required">*</span></label>
+                        <textarea name="webs_referencia" required id="websRefPlaceholder" placeholder="- https://ejemplo1.com (me gusta el diseño limpio)&#10;- https://ejemplo2.com (me gusta cómo presentan el portfolio)"></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Qué NO te gusta en diseño web?</label>
+                        <textarea name="no_me_gusta" placeholder="Ej: Diseños recargados, colores chillones, popups molestos, demasiado texto..."></textarea>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 11: REDES SOCIALES -->
+                <div class="section">
+                    <h2 class="section-title">📱 Redes Sociales</h2>
+                    <p class="section-subtitle">Tu presencia digital actual</p>
+
+                    <div class="grid-2">
+                        <div class="question"><label class="question-label">Instagram</label><input type="url" name="instagram" placeholder="https://instagram.com/..."></div>
+                        <div class="question"><label class="question-label" id="redEspecialLabel">Facebook</label><input type="url" name="red_especial" id="redEspecialInput" placeholder="https://facebook.com/..."></div>
+                        <div class="question"><label class="question-label">TikTok</label><input type="url" name="tiktok" placeholder="https://tiktok.com/@..."></div>
+                        <div class="question"><label class="question-label">LinkedIn</label><input type="url" name="linkedin" placeholder="https://linkedin.com/..."></div>
+                    </div>
+
+                    <div class="question" id="googleBusinessQ">
+                        <label class="question-label">¿Tienes Google My Business?</label>
+                        <div class="radio-group">
+                            <label class="radio-item"><input type="radio" name="google_business" value="si"><span>Sí</span></label>
+                            <label class="radio-item"><input type="radio" name="google_business" value="no"><span>No, pero quiero crear una</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 12: TIMING -->
+                <div class="section">
+                    <h2 class="section-title">⏰ Timing y Proyecto</h2>
+                    <p class="section-subtitle">Planifiquemos juntos</p>
+
+                    <div class="question">
+                        <label class="question-label">¿Cuándo necesitas la web lista? <span class="required">*</span></label>
+                        <div class="radio-group">
+                            <label class="radio-item"><input type="radio" name="urgencia" value="urgente" required><span>Lo antes posible (1-2 semanas)</span></label>
+                            <label class="radio-item"><input type="radio" name="urgencia" value="normal"><span>Normal (3-4 semanas)</span></label>
+                            <label class="radio-item"><input type="radio" name="urgencia" value="flexible"><span>Flexible (1-2 meses)</span></label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Tienes dominio web?</label>
+                        <div class="radio-group">
+                            <label class="radio-item"><input type="radio" name="tiene_dominio" value="si"><span>Sí, ya tengo dominio</span></label>
+                            <label class="radio-item"><input type="radio" name="tiene_dominio" value="no"><span>No, hay que registrar uno</span></label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">Si tienes dominio, ¿cuál es?</label>
+                        <input type="text" name="dominio_actual" placeholder="Ej: minombre.com">
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Quieres mantenimiento mensual?</label>
+                        <div class="radio-group">
+                            <label class="radio-item"><input type="radio" name="mantenimiento" value="si"><span>Sí, actualización de contenidos</span></label>
+                            <label class="radio-item"><input type="radio" name="mantenimiento" value="no"><span>No, lo gestionaré yo</span></label>
+                            <label class="radio-item"><input type="radio" name="mantenimiento" value="dudas"><span>Quiero más información</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 13: INFO ADICIONAL -->
+                <div class="section">
+                    <h2 class="section-title">💬 Información Adicional</h2>
+                    <p class="section-subtitle">¿Algo más que debamos saber?</p>
+
+                    <div class="question">
+                        <label class="question-label">Comentarios adicionales</label>
+                        <textarea name="info_adicional" placeholder="Cualquier detalle, duda o requisito especial..."></textarea>
+                    </div>
+
+                    <div class="question">
+                        <label class="question-label">¿Cómo prefieres comunicarte durante el proyecto?</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item"><input type="checkbox" name="comunicacion[]" value="email"><span>Email</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="comunicacion[]" value="telefono"><span>Teléfono</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="comunicacion[]" value="whatsapp"><span>WhatsApp</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="comunicacion[]" value="videollamada"><span>Videollamadas</span></label>
+                            <label class="checkbox-item"><input type="checkbox" name="comunicacion[]" value="presencial"><span>Reuniones presenciales</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span>📤</span><span>Enviar Brief Completo</span>
+                </button>
+
+                <div class="footer-note">
+                    <strong>🔒 Información protegida</strong><br>
+                    Al enviar recibirás una confirmación por email. Tus datos están seguros y solo se usan para este proyecto.
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  DATOS POR SECTOR
+// ══════════════════════════════════════════
+const SECTORES = {
+
+    reformas: {
+        nombre: "Reformas y Construcción",
+        emoji: "🏗️",
+        header: { title: "📋 Brief del Proyecto Web", subtitle: "Yen Aponte · Diseño Web" },
+        alert: { title: "💡 Antes de empezar", text: "Ten a mano fotos de tus mejores proyectos, testimonios de clientes y enlaces a webs que te gusten como referencia." },
+        s2: { title: "🏢 Sobre la Empresa", sub: "Historia y esencia de tu empresa" },
+        descExample: "Somos una empresa familiar con más de 15 años de experiencia en reformas integrales en la Costa Blanca. Nos especializamos en transformar viviendas combinando diseño mediterráneo moderno con acabados de alta calidad...",
+        esloganPlaceholder: "Ej: Transformamos viviendas en la Costa Blanca",
+        cargoPlaceholder: "Gerente, Director/a de obra...",
+        empresaNombrePlaceholder: "Ej: Reformas Yen SL",
+        s3: { title: "⚙️ Servicios Principales", sub: "Qué servicios quieres destacar en la web" },
+        servicios: [
+            { value: "reformas_integrales", label: "Reformas Integrales" },
+            { value: "cocinas", label: "Cocinas de Diseño" },
+            { value: "banos", label: "Baños Modernos" },
+            { value: "terrazas", label: "Terrazas y Exteriores" },
+            { value: "villas", label: "Rehabilitación de Villas" },
+            { value: "suelos", label: "Instalación de Suelos" },
+            { value: "pintura", label: "Pintura y Acabados" },
+            { value: "otros", label: "Otros (especificar abajo)" }
+        ],
+        otrosServiciosPlaceholder: "Describe otros servicios que ofrezcas...",
+        descServiciosPlaceholder: "Reformas Integrales: Transformamos tu hogar por completo...\nCocinas de Diseño: Creamos espacios funcionales y modernos...",
+        preciosLabel: "¿Quieres mostrar precios orientativos?",
+        preciosSiText: "Sí, mostrar precios orientativos (ej: «desde 5.000€»)",
+        s4sub: "A quién van dirigidos tus servicios",
+        clientes: [
+            { value: "propietarios", label: "Propietarios de viviendas (particulares)" },
+            { value: "inversores", label: "Inversores inmobiliarios" },
+            { value: "segunda_residencia", label: "Segunda residencia / Extranjeros" },
+            { value: "empresas", label: "Empresas / Locales comerciales" },
+            { value: "lujo", label: "Propiedades de lujo / Alto standing" }
+        ],
+        zonaPlaceholder: "Ej: Alicante, Orihuela, Torrevieja, Costa Blanca Sur...",
+        presupuestoLabel: "Rango de presupuesto medio de tus clientes",
+        presupuestos: [
+            { value: "bajo", label: "5.000€ – 15.000€ (reformas pequeñas)" },
+            { value: "medio", label: "15.000€ – 40.000€ (reformas medias)" },
+            { value: "alto", label: "40.000€ – 80.000€ (reformas grandes)" },
+            { value: "premium", label: "+80.000€ (reformas premium / villas)" }
+        ],
+        competidoresLabel: "Principales competidores (webs o nombres)",
+        competidoresPlaceholder: "Ej: ReformasAlicante.com, Villa Renovations...",
+        diferenciacionPlaceholder: "Ej: Materiales premium, equipo propio sin subcontratas, garantías extendidas...",
+        certificacionesLabel: "Certificaciones, premios o reconocimientos",
+        certificacionesPlaceholder: "Ej: Licencia de construcción, ISO, premios locales...",
+        fotosLabel: "¿Tienes fotos profesionales de proyectos? *",
+        fotos: [
+            { value: "si_profesionales", label: "Sí, fotos con fotógrafo profesional" },
+            { value: "si_buena", label: "Sí, fotos propias de buena calidad" },
+            { value: "mejorable", label: "Tengo fotos pero de calidad mejorable" },
+            { value: "no", label: "No (necesito sesión fotográfica)" }
+        ],
+        s7: { title: "⭐ Testimonios y Casos de Éxito", sub: "La voz de tus clientes" },
+        testimoniosPlaceholder: "1. Nombre: Juan Pérez\n   Testimonio: 'La reforma de mi cocina superó todas mis expectativas...'\n   Proyecto: Reforma integral apartamento\n\n2. (siguiente testimonio)",
+        casosLabel: "Proyectos destacados",
+        casosPlaceholder: "Describe 2-3 proyectos especiales: tipo, reto, solución, resultado...",
+        objetivos: [
+            { value: "captar_leads", label: "Conseguir solicitudes de presupuesto" },
+            { value: "mostrar_portfolio", label: "Mostrar portfolio de proyectos" },
+            { value: "prestigio", label: "Generar confianza y prestigio" },
+            { value: "posicionamiento", label: "Aparecer en Google" },
+            { value: "diferenciarnos", label: "Diferenciarnos de la competencia" }
+        ],
+        ctaExtra: false,
+        funcionalidades: [
+            { value: "formulario", label: "Formulario de presupuesto", checked: true },
+            { value: "galeria", label: "Galería de proyectos (antes/después)", checked: true },
+            { value: "whatsapp", label: "Botón de WhatsApp flotante", checked: true },
+            { value: "mapa", label: "Mapa de zona de actuación", checked: false },
+            { value: "calculadora", label: "Calculadora de presupuestos", checked: false },
+            { value: "blog", label: "Blog / Noticias", checked: false },
+            { value: "multiidioma", label: "Versión en inglés", checked: false }
+        ],
+        estiloExtra: false,
+        websRefPlaceholder: "- https://koolrenovations.com (me gusta el diseño limpio)\n- https://ejemplo2.com (me gusta cómo muestran proyectos)\n\nNo tienen que ser de reformas. Pueden ser de cualquier sector.",
+        redEspecialLabel: "Facebook",
+        redEspecialPlaceholder: "https://facebook.com/...",
+        showGoogleBusiness: true
+    },
+
+    escritura: {
+        nombre: "Escritura y Edición",
+        emoji: "📖",
+        header: { title: "📖 Brief del Proyecto Web", subtitle: "Yen Aponte · Diseño Web" },
+        alert: { title: "💡 Antes de empezar", text: "Ten a mano fotos tuyas (autor/a), portadas de tus libros o proyectos, reseñas de lectores y webs de autores que te gusten como referencia." },
+        s2: { title: "✍️ Sobre Ti y Tu Obra", sub: "Tu historia como autora/escritora" },
+        descExample: "Soy escritora con más de 10 años de carrera. Me especializo en novela histórica y en ayudar a otros autores a maquetar y publicar sus libros de forma profesional. Mi método combina rigor narrativo con un diseño editorial que da vida a las historias...",
+        esloganPlaceholder: "Ej: Doy vida a las historias que merecen ser contadas",
+        cargoPlaceholder: "Escritora, Autora, Editora...",
+        empresaNombrePlaceholder: "Ej: Tu nombre o nombre de tu proyecto",
+        s3: { title: "📚 Servicios y Proyectos", sub: "Qué servicios o publicaciones quieres destacar" },
+        servicios: [
+            { value: "libros_propios", label: "Venta de mis libros / obras propias" },
+            { value: "maquetacion", label: "Maquetación y diseño editorial" },
+            { value: "correccion", label: "Corrección y edición de textos" },
+            { value: "autopublicacion", label: "Asesoría en autopublicación (Amazon KDP, etc.)" },
+            { value: "talleres", label: "Talleres y cursos de escritura" },
+            { value: "ghostwriting", label: "Ghostwriting / Escritura por encargo" },
+            { value: "prologo", label: "Prólogos y textos de encargo" },
+            { value: "otros", label: "Otros (especificar abajo)" }
+        ],
+        otrosServiciosPlaceholder: "Describe otros servicios o proyectos...",
+        descServiciosPlaceholder: "Maquetación: Diseño profesional de interiores para impresión y digital...\nTalleres: Formación personalizada para escritores en proceso...",
+        preciosLabel: "¿Quieres mostrar tarifas orientativas?",
+        preciosSiText: "Sí, mostrar tarifas orientativas",
+        s4sub: "A quién va dirigido tu trabajo",
+        clientes: [
+            { value: "lectores_generales", label: "Lectores / compra directa de libros" },
+            { value: "autores_novatos", label: "Autores que quieren publicar su primer libro" },
+            { value: "autores_consolidados", label: "Autores con experiencia que buscan mejorar" },
+            { value: "empresas_contenidos", label: "Empresas que necesitan contenidos escritos" },
+            { value: "formacion", label: "Personas que quieren aprender a escribir" }
+        ],
+        zonaPlaceholder: "Ej: España, Latinoamérica, Internacional (online)...",
+        presupuestoLabel: "Rango de inversión media de tus clientes",
+        presupuestos: [
+            { value: "bajo", label: "Menos de 200€ (ebooks, lectores)" },
+            { value: "medio", label: "200€ – 800€ (servicios puntuales)" },
+            { value: "alto", label: "800€ – 2.500€ (proyectos completos)" },
+            { value: "premium", label: "+2.500€ (libros completos / ghostwriting)" }
+        ],
+        competidoresLabel: "Principales referentes del sector (webs de autores o editoriales)",
+        competidoresPlaceholder: "Ej: web de un autor que admiras, una editorial de referencia...",
+        diferenciacionPlaceholder: "Ej: Tu método propio, tu estilo único, tu experiencia editorial, tu nicho temático...",
+        certificacionesLabel: "Publicaciones, premios literarios o reconocimientos",
+        certificacionesPlaceholder: "Ej: Premios recibidos, libros publicados, colaboraciones destacadas...",
+        fotosLabel: "¿Tienes fotos profesionales tuyas (foto de autor/a)? *",
+        fotos: [
+            { value: "si_profesionales", label: "Sí, fotos con fotógrafo profesional" },
+            { value: "si_buena", label: "Sí, fotos propias de buena calidad" },
+            { value: "mejorable", label: "Tengo fotos pero de calidad mejorable" },
+            { value: "no", label: "No (necesito sesión fotográfica)" }
+        ],
+        s7: { title: "⭐ Reseñas y Casos de Éxito", sub: "La voz de tus lectores y clientes" },
+        testimoniosPlaceholder: "1. Nombre: María López\n   Testimonio: 'Gracias a su ayuda mi libro quedó exactamente como lo imaginé...'\n   Contexto: Maquetación de primera novela\n\n2. (siguiente testimonio)",
+        casosLabel: "Obras o proyectos destacados",
+        casosPlaceholder: "Describe 2-3 obras o proyectos especiales: título, género, logro, impacto...",
+        objetivos: [
+            { value: "vender_libros", label: "Vender mis libros directamente" },
+            { value: "captar_clientes", label: "Captar clientes para mis servicios" },
+            { value: "mostrar_obra", label: "Mostrar mi obra y trayectoria" },
+            { value: "prestigio", label: "Generar autoridad en mi sector" },
+            { value: "posicionamiento", label: "Aparecer en Google" },
+            { value: "newsletter", label: "Hacer crecer mi lista de lectores/suscriptores" }
+        ],
+        ctaExtra: { text: "Comprar libro / Contratar servicio directamente" },
+        funcionalidades: [
+            { value: "formulario", label: "Formulario de contacto / consulta", checked: true },
+            { value: "tienda", label: "Tienda online para venta de libros", checked: false },
+            { value: "galeria", label: "Portfolio de obras publicadas", checked: true },
+            { value: "whatsapp", label: "Botón de WhatsApp flotante", checked: false },
+            { value: "blog", label: "Blog / Diario de escritura", checked: true },
+            { value: "newsletter", label: "Suscripción a newsletter", checked: false },
+            { value: "multiidioma", label: "Versión en inglés / otro idioma", checked: false }
+        ],
+        estiloExtra: { text: "Editorial / Literario (tipografía protagonista, aire de libro)" },
+        websRefPlaceholder: "- https://ejemplo1.com (me gusta la sobriedad y elegancia)\n- https://ejemplo2.com (me gusta cómo presenta sus libros)\n\nPueden ser de autores, editoriales o cualquier sector.",
+        redEspecialLabel: "Goodreads / Amazon Author",
+        redEspecialPlaceholder: "https://goodreads.com/...",
+        showGoogleBusiness: false
+    },
+
+    fotografia: {
+        nombre: "Fotografía y Diseño",
+        emoji: "📷",
+        header: { title: "📷 Brief del Proyecto Web", subtitle: "Yen Aponte · Diseño Web" },
+        alert: { title: "💡 Antes de empezar", text: "Ten a mano tu mejor portfolio de imágenes, testimonios de clientes y webs de fotógrafos o diseñadores que admires como referencia." },
+        s2: { title: "📷 Sobre Tu Trabajo Creativo", sub: "Tu visión y estilo artístico" },
+        descExample: "Soy fotógrafo de bodas y eventos con más de 8 años capturando momentos únicos en la Comunidad Valenciana. Mi estilo combina luz natural y momentos espontáneos para crear imágenes que cuentan historias...",
+        esloganPlaceholder: "Ej: Capturo los momentos que no quieres olvidar",
+        cargoPlaceholder: "Fotógrafo/a, Diseñador/a, Director creativo...",
+        empresaNombrePlaceholder: "Ej: Tu nombre o nombre de tu estudio",
+        s3: { title: "🎨 Servicios Creativos", sub: "Qué servicios quieres destacar en la web" },
+        servicios: [
+            { value: "bodas", label: "Fotografía de bodas y eventos" },
+            { value: "retratos", label: "Retratos y sesiones personales" },
+            { value: "producto", label: "Fotografía de producto / ecommerce" },
+            { value: "arquitectura", label: "Fotografía de arquitectura / interiores" },
+            { value: "branding_visual", label: "Branding visual y fotografía corporativa" },
+            { value: "diseno_grafico", label: "Diseño gráfico y branding" },
+            { value: "video", label: "Video y motion graphics" },
+            { value: "otros", label: "Otros (especificar abajo)" }
+        ],
+        otrosServiciosPlaceholder: "Describe otros servicios creativos...",
+        descServiciosPlaceholder: "Fotografía de bodas: Cobertura completa del día con entrega de álbum digital y físico...\nRetratos: Sesiones individuales o familiares en exteriores o estudio...",
+        preciosLabel: "¿Quieres mostrar tarifas orientativas?",
+        preciosSiText: "Sí, mostrar paquetes y tarifas orientativas",
+        s4sub: "A quién va dirigido tu trabajo",
+        clientes: [
+            { value: "particulares", label: "Particulares (parejas, familias)" },
+            { value: "empresas", label: "Empresas y marcas" },
+            { value: "agencias", label: "Agencias de publicidad / marketing" },
+            { value: "eventos", label: "Organizadores de eventos" },
+            { value: "ecommerce", label: "Tiendas online (fotografía de producto)" }
+        ],
+        zonaPlaceholder: "Ej: Valencia, Alicante, Murcia, internacional...",
+        presupuestoLabel: "Rango de inversión media de tus clientes",
+        presupuestos: [
+            { value: "bajo", label: "Menos de 300€ (sesiones sencillas)" },
+            { value: "medio", label: "300€ – 1.000€ (sesiones completas)" },
+            { value: "alto", label: "1.000€ – 3.000€ (eventos, branding)" },
+            { value: "premium", label: "+3.000€ (bodas, proyectos grandes)" }
+        ],
+        competidoresLabel: "Fotógrafos o diseñadores de referencia en tu zona/nicho",
+        competidoresPlaceholder: "Ej: fotógrafo-ejemplo.com, estudio-referencia.es...",
+        diferenciacionPlaceholder: "Ej: Tu estilo único, tu equipo, tu forma de editar, tu trato personal...",
+        certificacionesLabel: "Publicaciones, premios o reconocimientos creativos",
+        certificacionesPlaceholder: "Ej: Publicaciones en revistas, premios de fotografía, exposiciones...",
+        fotosLabel: "¿Tienes un portfolio de imágenes listo para la web? *",
+        fotos: [
+            { value: "si_profesionales", label: "Sí, portfolio completo y seleccionado" },
+            { value: "si_buena", label: "Sí, tengo imágenes pero sin seleccionar" },
+            { value: "mejorable", label: "Tengo poco material o está desactualizado" },
+            { value: "no", label: "Necesito hacer nueva producción" }
+        ],
+        s7: { title: "⭐ Testimonios y Proyectos Destacados", sub: "La voz de tus clientes" },
+        testimoniosPlaceholder: "1. Nombre: Sandra y Marcos\n   Testimonio: 'Las fotos de nuestra boda son exactamente como las soñábamos...'\n   Contexto: Boda en Valencia\n\n2. (siguiente testimonio)",
+        casosLabel: "Proyectos o sesiones destacados",
+        casosPlaceholder: "Describe 2-3 proyectos especiales: cliente, tipo de trabajo, resultado...",
+        objetivos: [
+            { value: "captar_clientes", label: "Captar nuevos clientes" },
+            { value: "mostrar_portfolio", label: "Mostrar mi portfolio y estilo" },
+            { value: "prestigio", label: "Posicionarme como referente en mi nicho" },
+            { value: "posicionamiento", label: "Aparecer en Google" },
+            { value: "diferenciarnos", label: "Diferenciarme de otros fotógrafos/diseñadores" }
+        ],
+        ctaExtra: false,
+        funcionalidades: [
+            { value: "galeria", label: "Galería de portfolio visual", checked: true },
+            { value: "formulario", label: "Formulario de contacto / reserva", checked: true },
+            { value: "whatsapp", label: "Botón de WhatsApp flotante", checked: true },
+            { value: "blog", label: "Blog / historias de sesiones", checked: false },
+            { value: "tienda", label: "Tienda online (venta de prints / stock)", checked: false },
+            { value: "calendario", label: "Calendario de disponibilidad", checked: false },
+            { value: "multiidioma", label: "Versión en inglés", checked: false }
+        ],
+        estiloExtra: false,
+        websRefPlaceholder: "- https://ejemplo1.com (me gusta cómo presenta el portfolio)\n- https://ejemplo2.com (me gusta la atmósfera visual)\n\nPueden ser de cualquier sector creativo.",
+        redEspecialLabel: "Behance / 500px",
+        redEspecialPlaceholder: "https://behance.net/...",
+        showGoogleBusiness: true
+    },
+
+    coaching: {
+        nombre: "Coaching y Servicios Personales",
+        emoji: "🌱",
+        header: { title: "🌱 Brief del Proyecto Web", subtitle: "Yen Aponte · Diseño Web" },
+        alert: { title: "💡 Antes de empezar", text: "Ten a mano una foto profesional tuya, testimonios de clientes, y webs de coaches o terapeutas que te gusten como referencia." },
+        s2: { title: "🌱 Sobre Ti y Tu Método", sub: "Tu historia y enfoque personal" },
+        descExample: "Soy coach de vida certificada con más de 7 años acompañando a personas en sus procesos de cambio. Mi método combina herramientas de PNL, mindfulness y psicología positiva para ayudarte a encontrar tu camino...",
+        esloganPlaceholder: "Ej: Te acompaño a convertirte en quien quieres ser",
+        cargoPlaceholder: "Coach, Terapeuta, Consultora, Mentora...",
+        empresaNombrePlaceholder: "Ej: Tu nombre o nombre de tu proyecto/marca",
+        s3: { title: "🎯 Servicios y Programas", sub: "Qué servicios quieres destacar en la web" },
+        servicios: [
+            { value: "sesiones_individuales", label: "Sesiones individuales (1:1)" },
+            { value: "programas_grupales", label: "Programas y talleres grupales" },
+            { value: "curso_online", label: "Cursos online / formación digital" },
+            { value: "mentoria", label: "Mentoría y acompañamiento" },
+            { value: "retiros", label: "Retiros y experiencias presenciales" },
+            { value: "conferencias", label: "Conferencias y ponencias" },
+            { value: "infoproductos", label: "Libros, guías o infoproductos" },
+            { value: "otros", label: "Otros (especificar abajo)" }
+        ],
+        otrosServiciosPlaceholder: "Describe otros servicios o programas...",
+        descServiciosPlaceholder: "Sesiones 1:1: Acompañamiento personalizado de 60 minutos para trabajar tus objetivos...\nProgramas grupales: Grupos reducidos de 8 semanas con metodología estructurada...",
+        preciosLabel: "¿Quieres mostrar tarifas orientativas?",
+        preciosSiText: "Sí, mostrar tarifas o rangos de precio",
+        s4sub: "A quién va dirigido tu trabajo",
+        clientes: [
+            { value: "particulares", label: "Personas en transición vital o profesional" },
+            { value: "ejecutivos", label: "Directivos y profesionales (coaching ejecutivo)" },
+            { value: "emprendedores", label: "Emprendedores y autónomos" },
+            { value: "mujeres", label: "Mujeres en proceso de empoderamiento" },
+            { value: "empresas", label: "Empresas (talleres, formaciones in-company)" }
+        ],
+        zonaPlaceholder: "Ej: España, online, internacional...",
+        presupuestoLabel: "Rango de inversión media de tus clientes",
+        presupuestos: [
+            { value: "bajo", label: "Menos de 200€ (sesiones sueltas)" },
+            { value: "medio", label: "200€ – 800€ (programas cortos)" },
+            { value: "alto", label: "800€ – 2.500€ (programas intensivos)" },
+            { value: "premium", label: "+2.500€ (mentoría premium / empresas)" }
+        ],
+        competidoresLabel: "Referentes o coaches que admiras (webs o nombres)",
+        competidoresPlaceholder: "Ej: coach-referente.com, nombre de un mentor que admiras...",
+        diferenciacionPlaceholder: "Ej: Tu método propio, tu formación, tu experiencia personal, tu nicho específico...",
+        certificacionesLabel: "Certificaciones, formaciones o reconocimientos",
+        certificacionesPlaceholder: "Ej: ICF, PNL, Mindfulness, formaciones universitarias, publicaciones...",
+        fotosLabel: "¿Tienes fotos profesionales tuyas? *",
+        fotos: [
+            { value: "si_profesionales", label: "Sí, fotos con fotógrafo profesional" },
+            { value: "si_buena", label: "Sí, fotos propias de buena calidad" },
+            { value: "mejorable", label: "Tengo fotos pero de calidad mejorable" },
+            { value: "no", label: "No (necesito sesión fotográfica)" }
+        ],
+        s7: { title: "⭐ Testimonios y Transformaciones", sub: "El impacto en la vida de tus clientes" },
+        testimoniosPlaceholder: "1. Nombre: Laura M.\n   Testimonio: 'Trabajar con ella cambió completamente mi perspectiva...'\n   Contexto: Programa de 3 meses\n\n2. (siguiente testimonio)",
+        casosLabel: "Casos de transformación destacados",
+        casosPlaceholder: "Describe 2-3 historias de transformación (sin datos personales): situación inicial, proceso, resultado...",
+        objetivos: [
+            { value: "captar_clientes", label: "Captar nuevos clientes / alumnos" },
+            { value: "vender_programas", label: "Vender programas o cursos online" },
+            { value: "prestigio", label: "Posicionarme como referente en mi nicho" },
+            { value: "posicionamiento", label: "Aparecer en Google" },
+            { value: "newsletter", label: "Hacer crecer mi comunidad / lista de email" },
+            { value: "conferencias", label: "Conseguir invitaciones a hablar o dar conferencias" }
+        ],
+        ctaExtra: { text: "Reservar sesión / Inscribirse a programa directamente" },
+        funcionalidades: [
+            { value: "formulario", label: "Formulario de contacto / consulta gratuita", checked: true },
+            { value: "calendario", label: "Calendario de reservas online (Calendly, etc.)", checked: false },
+            { value: "blog", label: "Blog / artículos de valor", checked: true },
+            { value: "whatsapp", label: "Botón de WhatsApp flotante", checked: true },
+            { value: "newsletter", label: "Suscripción a newsletter / lead magnet", checked: false },
+            { value: "tienda", label: "Tienda (cursos, guías, infoproductos)", checked: false },
+            { value: "multiidioma", label: "Versión en inglés", checked: false }
+        ],
+        estiloExtra: false,
+        websRefPlaceholder: "- https://ejemplo1.com (me gusta la energía y los colores)\n- https://ejemplo2.com (me gusta cómo presentan los programas)\n\nPueden ser de cualquier sector.",
+        redEspecialLabel: "YouTube / Podcast",
+        redEspecialPlaceholder: "https://youtube.com/...",
+        showGoogleBusiness: false
+    }
+};
+
+// ══════════════════════════════════════════
+//  LÓGICA
+// ══════════════════════════════════════════
+let currentSector = null;
+
+function loadSector(key) {
+    currentSector = key;
+    const d = SECTORES[key];
+
+    // Mostrar/ocultar pantallas
+    document.getElementById('sectorScreen').style.display = 'none';
+    const app = document.getElementById('briefApp');
+    app.style.display = 'block';
+    window.scrollTo(0,0);
+
+    // Header
+    document.getElementById('headerTitle').textContent = d.header.title;
+    document.getElementById('headerSubtitle').textContent = d.header.subtitle;
+    document.getElementById('sectorPill').textContent = d.emoji + ' ' + d.nombre;
+    document.getElementById('formSubject').value = 'Brief ' + d.nombre + ' - Yen Aponte';
+    document.getElementById('sectorHidden').value = key;
+
+    // Alert
+    document.getElementById('alertTitle').textContent = d.alert.title;
+    document.getElementById('alertText').textContent = d.alert.text;
+
+    // Sección 1
+    document.getElementById('empresaNombrePlaceholder').placeholder = d.empresaNombrePlaceholder;
+    document.getElementById('cargoPlaceholder').placeholder = d.cargoPlaceholder;
+
+    // Sección 2
+    document.getElementById('s2title').textContent = d.s2.title;
+    document.getElementById('s2sub').textContent = d.s2.sub;
+    document.getElementById('descExample').textContent = d.descExample;
+    document.getElementById('esloganPlaceholder').placeholder = d.esloganPlaceholder;
+
+    // Sección 3 — servicios dinámicos
+    document.getElementById('s3title').textContent = d.s3.title;
+    document.getElementById('s3sub').textContent = d.s3.sub;
+    buildCheckboxes('serviciosGroup', 'servicios[]', d.servicios);
+    document.getElementById('otrosServiciosPlaceholder').placeholder = d.otrosServiciosPlaceholder;
+    document.getElementById('descServiciosPlaceholder').placeholder = d.descServiciosPlaceholder;
+    document.getElementById('preciosLabel').textContent = d.preciosLabel;
+    document.getElementById('preciosSiText').textContent = d.preciosSiText;
+
+    // Sección 4 — clientes dinámicos
+    document.getElementById('s4sub').textContent = d.s4sub;
+    buildCheckboxes('clienteGroup', 'cliente_tipo[]', d.clientes);
+    document.getElementById('zonaPlaceholder').placeholder = d.zonaPlaceholder;
+    document.getElementById('presupuestoLabel').textContent = d.presupuestoLabel;
+    buildRadios('presupuestoGroup', 'presupuesto_cliente', d.presupuestos);
+
+    // Sección 5
+    document.getElementById('competidoresLabel').textContent = d.competidoresLabel;
+    document.getElementById('competidoresPlaceholder').placeholder = d.competidoresPlaceholder;
+    document.getElementById('diferenciacionPlaceholder').placeholder = d.diferenciacionPlaceholder;
+    document.getElementById('certificacionesLabel').textContent = d.certificacionesLabel;
+    document.getElementById('certificacionesPlaceholder').placeholder = d.certificacionesPlaceholder;
+
+    // Sección 6 — fotos
+    document.getElementById('fotosLabel').textContent = d.fotosLabel;
+    buildRadios('fotosGroup', 'tiene_fotos', d.fotos);
+
+    // Sección 7
+    document.getElementById('s7title').textContent = d.s7.title;
+    document.getElementById('s7sub').textContent = d.s7.sub;
+    document.getElementById('testimoniosPlaceholder').placeholder = d.testimoniosPlaceholder;
+    document.getElementById('casosLabel').textContent = d.casosLabel;
+    document.getElementById('casosPlaceholder').placeholder = d.casosPlaceholder;
+
+    // Sección 8 — objetivos
+    buildCheckboxes('objetivosGroup', 'objetivos[]', d.objetivos);
+    const ctaExtra = document.getElementById('ctaExtraItem');
+    if (d.ctaExtra) {
+        ctaExtra.style.display = 'flex';
+        document.getElementById('ctaExtraText').textContent = d.ctaExtra.text;
+    } else {
+        ctaExtra.style.display = 'none';
+    }
+
+    // Sección 9 — funcionalidades
+    buildCheckboxesFull('funcionalidadesGroup', 'funcionalidades[]', d.funcionalidades);
+
+    // Sección 10 — estilo extra
+    const estiloExtra = document.getElementById('estiloExtra');
+    if (d.estiloExtra) {
+        estiloExtra.style.display = 'flex';
+        document.getElementById('estiloExtraText').textContent = d.estiloExtra.text;
+    } else {
+        estiloExtra.style.display = 'none';
+    }
+    document.getElementById('websRefPlaceholder').placeholder = d.websRefPlaceholder;
+
+    // Sección 11 — redes
+    document.getElementById('redEspecialLabel').textContent = d.redEspecialLabel;
+    document.getElementById('redEspecialInput').placeholder = d.redEspecialPlaceholder;
+    document.getElementById('googleBusinessQ').style.display = d.showGoogleBusiness ? 'block' : 'none';
+
+    // Progreso
+    updateProgress();
+}
+
+function goBack() {
+    document.getElementById('briefApp').style.display = 'none';
+    document.getElementById('sectorScreen').style.display = 'flex';
+    window.scrollTo(0,0);
+}
+
+function buildCheckboxes(containerId, name, items) {
+    const c = document.getElementById(containerId);
+    c.innerHTML = items.map(i => `
+        <label class="checkbox-item">
+            <input type="checkbox" name="${name}" value="${i.value}">
+            <span>${i.label}</span>
+        </label>`).join('');
+    c.querySelectorAll('input').forEach(inp => inp.addEventListener('change', updateProgress));
+}
+
+function buildCheckboxesFull(containerId, name, items) {
+    const c = document.getElementById(containerId);
+    c.innerHTML = items.map(i => `
+        <label class="checkbox-item">
+            <input type="checkbox" name="${name}" value="${i.value}" ${i.checked ? 'checked' : ''}>
+            <span>${i.label}</span>
+        </label>`).join('');
+    c.querySelectorAll('input').forEach(inp => inp.addEventListener('change', updateProgress));
+}
+
+function buildRadios(containerId, name, items) {
+    const c = document.getElementById(containerId);
+    c.innerHTML = items.map(i => `
+        <label class="radio-item">
+            <input type="radio" name="${name}" value="${i.value}">
+            <span>${i.label}</span>
+        </label>`).join('');
+    c.querySelectorAll('input').forEach(inp => inp.addEventListener('change', updateProgress));
+}
+
+function updateProgress() {
+    const form = document.getElementById('briefForm');
+    if (!form) return;
+    const inputs = form.querySelectorAll('input:not([type="hidden"]), textarea, select');
+    const filled = Array.from(inputs).filter(inp => {
+        if (inp.type === 'checkbox' || inp.type === 'radio') return inp.checked;
+        return inp.value.trim() !== '';
+    }).length;
+    const pct = Math.round((filled / inputs.length) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressPercent').textContent = pct + '%';
+}
+
+document.getElementById('briefForm').addEventListener('input', updateProgress);
+document.getElementById('briefForm').addEventListener('change', updateProgress);
+
+document.getElementById('briefForm').addEventListener('submit', function() {
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<span>⏳</span><span>Enviando respuestas...</span>';
+    btn.disabled = true;
+});
+</script>
+</body>
+</html>
